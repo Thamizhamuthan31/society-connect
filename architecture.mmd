@@ -1,0 +1,20 @@
+%% Civic Signal style: a clear flow diagram for interview explanation and README documentation.
+flowchart LR
+  Browser[Resident browser]
+  App[App.tsx\nTheme + route + toast]
+  Shell[Home.tsx\nresponsive workspace shell]
+  Data[societyData.ts\ntyped mock repository]
+  State[React local state\nuseState + derived views]
+  Views[Feature views\nnotices / requests / events / facilities / directory / polls / visitors]
+  Feedback[Toast + empty states\nvalidation + status tags]
+  Future[(Production API + database\nauth + roles + notifications)]
+
+  Browser --> App
+  App --> Shell
+  Shell --> Data
+  Shell --> State
+  State --> Views
+  Data --> Views
+  Views --> Feedback
+  Views -. future replacement .-> Future
+  Future -. validated responses .-> State
