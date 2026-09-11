@@ -1,10 +1,10 @@
 # SocietyConnect — Community Management Web App
 
-SocietyConnect is a responsive frontend web application for a residential society or community. It was created for the Horizon Broadband technical assessment and focuses on a smaller set of complete, explainable workflows instead of claiming to implement every possible society feature.
+SocietyConnect is a responsive frontend web application for a residential society or community. It focuses on a smaller set of complete, well-explained workflows rather than trying to cover every possible feature a community app could have — the goal is depth and clarity over breadth.
 
-> **Important:** This repository is intentionally a frontend assessment demo. It uses local mock data, React state, and `localStorage` (for requests, RSVPs, bookings, and the poll vote) so that every interaction can be demonstrated and survives a page refresh without a backend. The production architecture section explains where authentication, authorization, API validation, database persistence, and notifications would be added.
+> **Note:** This is a frontend demo. It uses local mock data, React state, and `localStorage` (for requests, RSVPs, bookings, and the poll vote) so every interaction can be tried out and survives a page refresh without a backend. See "Future improvements" below for how this would evolve into a full production system.
 
-## What is implemented
+## Features
 
 | Area | Included behavior |
 |---|---|
@@ -17,7 +17,7 @@ SocietyConnect is a responsive frontend web application for a residential societ
 | Polls | Select an option, submit a vote (persisted), see percentages after submission |
 | Visitor pass | Form validation, date selection, live pass preview, success state |
 | Responsive behavior | Persistent desktop navigation rail and mobile navigation drawer |
-| UI quality | Loading-free mock state, empty/search state, toast feedback, focus states, reduced-motion support |
+| UI quality | Empty/search states, toast feedback, focus states, reduced-motion support |
 
 ## Technology stack
 
@@ -25,13 +25,12 @@ SocietyConnect is a responsive frontend web application for a residential societ
 - **Vite** for the development server and production build pipeline.
 - **Tailwind CSS 4** for responsive utility styling, combined with a small set of project-specific CSS classes.
 - **Lucide React** for consistent interface icons.
-- **Wouter** for the top-level route fallback.
-- **Sonner** for lightweight action feedback.
-- **Generated visual assets** for the SocietyConnect brand mark and editorial community imagery.
+- **Wouter** for lightweight client-side routing.
+- **Sonner** for lightweight action feedback (toasts).
 
-## Architecture used
+## Architecture
 
-The project uses a simple frontend feature architecture that is easy to explain in an interview: a single shell owns navigation and routing between views, each feature screen is its own component, and shared UI and data live in their own modules.
+The project uses a simple frontend feature architecture: a single shell owns navigation and routing between views, each feature screen is its own component, and shared UI and data live in their own modules.
 
 ```text
 App.tsx
@@ -55,10 +54,10 @@ lib/societyData.ts
   └── domain types + mock repository data
 
 index.css
-  └── Civic Signal design tokens, typography, surfaces, motion, responsive rules
+  └── design tokens, typography, surfaces, motion, responsive rules
 ```
 
-Each feature view is a standalone component that only receives the props it needs, so it can be read, tested, or replaced without touching the others. In a production version, `societyData.ts` would be replaced by a repository that calls an API, and `useLocalStorage` would be replaced by data fetched from that API.
+Each feature view is a standalone component that only receives the props it needs, so it can be read, tested, or replaced independently of the others. In a production version, `societyData.ts` would be replaced by a repository that calls an API, and `useLocalStorage` would be replaced by data fetched from that API — no other view logic would need to change.
 
 ## Project structure
 
@@ -77,11 +76,11 @@ client/
       views/                       # one file per feature screen
       ui/                          # reusable shadcn/ui primitives from the scaffold
     contexts/                      # theme context from the scaffold
-server/                            # scaffold compatibility server; not modified for the demo
+server/                            # scaffold compatibility server; not modified for this demo
 architecture.mmd                   # application flow diagram source
 ```
 
-## Setup instructions
+## Getting started
 
 The repository is managed with `pnpm`.
 
@@ -97,7 +96,7 @@ pnpm check
 pnpm build
 ```
 
-The project does not require an API key or database for the assessment demo.
+No API key or database is required to run the project.
 
 ## Application flow
 
@@ -108,44 +107,29 @@ The project does not require an API key or database for the assessment demo.
 5. Search and filter states are handled in the page component that owns the feature.
 6. A future API repository can replace the local data module without changing the visual contract of each view.
 
-## How to explain the code in the interview
+## Design decisions
 
-**Why React?** React lets the app be decomposed into reusable components and lets the UI update when local state changes. The official React learning material describes components, JSX, lists, events, and `useState` as core concepts for daily React work.[1]
+**Why React?** Components and local state (`useState`) make it straightforward to break the app into independent, reusable pieces that re-render as state changes.
 
-**Why Vite?** Vite supplies the dev server with fast hot updates and a production build command. The app uses Vite’s standard React entry structure.[2]
+**Why Vite?** Fast dev-server hot reloads and a simple production build pipeline, with React's standard entry structure.
 
-**Why Tailwind?** Tailwind keeps responsive layout decisions close to the markup and provides state and breakpoint variants. SocietyConnect combines utilities with a small global CSS layer for design tokens and reusable surfaces.[3]
+**Why Tailwind?** Keeps responsive layout decisions close to the markup, with state and breakpoint variants, combined with a small global CSS layer for design tokens and shared surfaces.
 
-**Why local state and localStorage?** The assessment allows JSON, local storage, or local data. In-memory state keeps most of the demo deterministic and easy to run, while `localStorage` is used for the interactions a resident would expect to survive a refresh (open requests, RSVPs, bookings, the poll vote). The `useLocalStorage` hook is the one seam that would change to call an API in production — nothing else in the views would need to.
+**Why local state and localStorage?** In-memory state keeps most of the demo deterministic and easy to run, while `localStorage` is used for the interactions a resident would expect to survive a refresh (open requests, RSVPs, bookings, the poll vote). `useLocalStorage` is the single seam that would change to call a real API in production — nothing else in the views would need to.
 
 **How would production differ?** Authentication would identify a resident; role-based authorization would protect committee and security actions; a backend would validate every request; a database would persist announcements, bookings, votes, and visitors; and notifications would be delivered through a server-side integration.
 
 ## Known limitations
 
-The demo does not include production authentication, real role-based permissions, a database, server-side validation, payment tracking, push notifications, file uploads, or a live visitor/security integration. It also uses clearly labeled fictional demo residents and does not present fabricated reviews, ratings, or testimonials.
+This demo does not include production authentication, real role-based permissions, a database, server-side validation, payment tracking, push notifications, file uploads, or a live visitor/security integration. Demo residents are clearly fictional, and no fabricated reviews, ratings, or testimonials are presented.
 
 ## Future improvements
 
-The next sensible step would be to add a backend repository with a relational data model for societies, buildings, units, users, roles, announcements, requests, events, bookings, votes, and visitor passes. The UI could then add login, admin and security roles, request timelines, notification preferences, audit logs, and optimistic updates with retry states.
-
-## Git submission checklist
-
-Use multiple descriptive commits rather than one final commit. A simple history could be:
-
-```bash
-git add . && git commit -m "chore: scaffold SocietyConnect frontend"
-git add . && git commit -m "feat: add civic dashboard shell and navigation"
-git add . && git commit -m "feat: add resident workflows and local interactions"
-git add . && git commit -m "refactor: split feature screens into their own components"
-git add . && git commit -m "feat: persist requests, RSVPs, bookings, and poll vote to localStorage"
-git add . && git commit -m "docs: document architecture, setup, and known limitations"
-```
-
-Before sharing the repository, confirm that the GitHub repository is accessible to the evaluators, add screenshots, record a short walkthrough video, and include the repository and video links in the submission email. Do not claim backend features that are not present in this demo.
+The next step would be a backend with a relational data model for societies, buildings, units, users, roles, announcements, requests, events, bookings, votes, and visitor passes. On top of that, the UI could add login, admin and security roles, request timelines, notification preferences, audit logs, and optimistic updates with retry states.
 
 ## References
 
-[1]: https://react.dev/learn "React Quick Start"
-[2]: https://vite.dev/guide/ "Vite Getting Started Guide"
-[3]: https://tailwindcss.com/docs/styling-with-utility-classes "Tailwind CSS: Styling with utility classes"
-[4]: https://git-scm.com/book/en/v2 "Pro Git Book"
+- [React Quick Start](https://react.dev/learn)
+- [Vite Getting Started Guide](https://vite.dev/guide/)
+- [Tailwind CSS: Styling with utility classes](https://tailwindcss.com/docs/styling-with-utility-classes)
+- [Pro Git Book](https://git-scm.com/book/en/v2)
